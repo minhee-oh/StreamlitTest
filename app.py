@@ -150,3 +150,54 @@ if len(numeric_cols) > 0:
     st.pyplot(fig)
 else:
     st.info("수치형 데이터가 없습니다.")
+
+# ----------------------
+# 6. 레이아웃 구성 (컬럼, 탭, Expander)
+# ----------------------
+st.subheader("📐 레이아웃 구성 예시")
+
+# ---- 6-1. Columns ----
+st.markdown("### 👉 Columns 예시")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.write("🔹 컬럼 1")
+    st.write("왼쪽 영역")
+
+with col2:
+    st.write("🔹 컬럼 2")
+    st.write("중앙 영역")
+
+with col3:
+    st.write("🔹 컬럼 3")
+    st.write("오른쪽 영역")
+
+# ---- 6-2. Tabs ----
+st.markdown("### 👉 Tabs 예시")
+
+tab1, tab2, tab3 = st.tabs(["데이터", "그래프", "설정"])
+
+with tab1:
+    st.write("📄 데이터 탭입니다.")
+    st.dataframe(df)
+
+with tab2:
+    st.write("📊 그래프 탭입니다.")
+    if len(numeric_cols) > 0:
+        fig, ax = plt.subplots()
+        ax.hist(df[selected_col], bins=20)
+        st.pyplot(fig)
+    else:
+        st.info("수치형 데이터 없음")
+
+with tab3:
+    st.write("⚙️ 설정 탭입니다.")
+    st.write("옵션을 여기에 추가할 수 있습니다.")
+
+# ---- 6-3. Expander ----
+st.markdown("### 👉 Expander 예시")
+
+with st.expander("Expander 열기 / 닫기"):
+    st.write("이 영역은 접었다 펼 수 있습니다.")
+    st.write("설명이나 옵션을 숨기고 싶을 때 활용하면 좋아요.")
