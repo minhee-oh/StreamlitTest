@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 st.set_page_config(
-    page_title="CSV 분석 페이지",
+    page_title="CSV 파일 분석 페이지",
     page_icon="📊",
     layout="wide"
 )
@@ -11,45 +11,49 @@ st.set_page_config(
 st.title("📊 CSV 파일 분석 페이지")
 
 # ----------------------
-# 1. CSV 파일 업로드
+# 1. CSV 자동 로드
 # ----------------------
-uploaded_file = st.file_uploader("CSV 파일을 업로드하세요.", type=["csv"])
+csv_path = "penguins.csv"   # 같은 폴더에 있어야 함
+df = pd.read_csv(csv_path)
 
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
+st.success(f"로컬 CSV 파일을 불러왔습니다: {csv_path}")
 
-    st.subheader("📄 데이터 미리 보기")
-    st.dataframe(df)
+# ----------------------
+# 2. 데이터 미리 보기
+# ----------------------
+st.subheader("📄 데이터 미리 보기")
+st.dataframe(df)
 
-    # ----------------------
-    # 2. 기본 정보
-    # ----------------------
-    st.subheader("ℹ️ 기본 정보")
-    st.write("행(row) 수:", df.shape[0])
-    st.write("열(column) 수:", df.shape[1])
-    st.write("열 목록:", list(df.columns))
+# ----------------------
+# 3. 기본 정보
+# ----------------------
+st.subheader("ℹ️ 기본 정보")
+st.write("행(row) 수:", df.shape[0])
+st.write("열(column) 수:", df.shape[1])
+st.write("열 목록:", list(df.columns))
 
-    # ----------------------
-    # 3. 통계 요약
-    # ----------------------
-    st.subheader("📊 기술 통계")
-    st.write(df.describe())
+# ----------------------
+# 4. 기술 통계
+# ----------------------
+st.subheader("📊 기술 통계")
+st.write(df.describe())
 
-    # ----------------------
-    # 4. 선택한 컬럼 시각화
-    # ----------------------
-    st.subheader("📈 컬럼 시각화")
+# ----------------------
+# 5. 수치형 컬럼 선택 후 그래프
+# ----------------------
+st.subheader("📈 컬럼 분포 시각화")
 
-    numeric_cols = df.select_dtypes(include=["float64", "int64"]).columns
+numeric_cols = df.select_dtypes(include=["float64", "int64"]).columns
 
-    if len(numeric_cols) > 0:
-        col = st.selectbox("시각화할 수치형 컬럼 선택", numeric_cols)
+if len(numeric_cols) > 0:
+    selected_col = st.selectbox("시각화할 수치형 컬럼 선택", numeric_cols)
 
-        fig, ax = plt.subplots()
-        ax.hist(df[col], bins=20)
-        ax.set_title(f"{col} 분포")
-        st.pyplot(fig)
-    else:
-        st.info("수치형 데이터가 없습니다.")
+    fig, ax = plt.subplots()
+    ax.hist(df[selected_col], bins=20)
+    ax.set_title(f"{selected_col} 분포")
+    ax.set_xlabel(selected_col)
+    ax.set_ylabel("Frequency")
+
+    st.pyplot(fig)
 else:
-    st.info("CSV 파일을 업로드해주세요!")
+    st.info("수치형 데이터가 없습니다.")
